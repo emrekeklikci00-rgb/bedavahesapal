@@ -1,0 +1,3064 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Account Generator - Premium Hesaplar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --accent: #fd79a8;
+            --dark: #2d3436;
+            --light: #dfe6e9;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+            transition: all 0.3s;
+        }
+
+        body.light-mode {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #2d3436;
+        }
+
+        /* Parçacık Sistemi */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 15s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Matrix Modu */
+        body.matrix-mode .particles {
+            background: rgba(0, 20, 0, 0.1);
+        }
+
+        .matrix-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        body.matrix-mode .matrix-rain {
+            opacity: 0.3;
+        }
+
+        /* Container */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 40px 0;
+            animation: fadeInDown 1s ease;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 3.5em;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #f9ca24, #f093fb);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient 5s ease infinite;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .subtitle {
+            color: #a0a0a0;
+            font-size: 1.3em;
+            margin-top: 10px;
+            font-weight: 300;
+        }
+
+        /* Kontrol Paneli */
+        .control-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #00b894;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            top: 2.5px;
+            left: 2.5px;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(25px);
+        }
+
+        /* İstatistikler Barı */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .stat-card:hover::before {
+            left: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00b894, #00cec9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: all 0.3s;
+        }
+
+        .stat-value.negative {
+            background: linear-gradient(45deg, #ff7675, #d63031);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .stat-change {
+            font-size: 0.8em;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        .stat-change.positive { color: #00b894; }
+        .stat-change.negative { color: #ff7675; }
+
+        /* Platformlar Grid */
+        .platforms {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .platform-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .platform-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .platform-card:hover::before {
+            left: 100%;
+        }
+
+        .platform-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .platform-card.vip {
+            border: 2px solid gold;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .platform-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            justify-content: space-between;
+        }
+
+        .platform-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .platform-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+        }
+
+        .platform-card:hover .platform-icon {
+            transform: rotate(10deg) scale(1.1);
+        }
+
+        .roblox { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
+        .spotify { background: linear-gradient(135deg, #1db954, #1ed760); }
+        .steam { background: linear-gradient(135deg, #1b2838, #2a475e); }
+        .netflix { background: linear-gradient(135deg, #e50914, #b20710); }
+        .minecraft { background: linear-gradient(135deg, #5d8c3a, #8bc34a); }
+        .discord { background: linear-gradient(135deg, #5865f2, #4752c4); }
+
+        .platform-name {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .platform-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            background: rgba(0, 255, 0, 0.2);
+            color: #00ff88;
+            font-weight: 600;
+        }
+
+        .platform-status::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
+        }
+
+        .stock-info {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            font-size: 0.9em;
+        }
+
+        .stock-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .stock-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00b894, #00cec9);
+            transition: width 0.5s ease;
+            border-radius: 3px;
+        }
+
+        .account-display {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .account-info {
+            margin: 8px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            word-break: break-all;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .label {
+            color: #888;
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            min-width: 80px;
+        }
+
+        .value {
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            flex: 1;
+        }
+
+        .password-strength {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-left: 5px;
+        }
+
+        .strength-strong { background: #00b894; box-shadow: 0 0 10px #00b894; }
+        .strength-medium { background: #fdcb6e; box-shadow: 0 0 10px #fdcb6e; }
+        .strength-weak { background: #d63031; box-shadow: 0 0 10px #d63031; }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:active::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-roblox { background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; }
+        .btn-spotify { background: linear-gradient(135deg, #1db954, #1ed760); color: white; }
+        .btn-steam { background: linear-gradient(135deg, #2a475e, #1b2838); color: white; }
+        .btn-netflix { background: linear-gradient(135deg, #e50914, #b20710); color: white; }
+        .btn-minecraft { background: linear-gradient(135deg, #5d8c3a, #8bc34a); color: white; }
+        .btn-discord { background: linear-gradient(135deg, #5865f2, #4752c4); color: white; }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #4ecdc4;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #4ecdc4;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item-value {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #4ecdc4;
+        }
+
+        .stat-item-label {
+            font-size: 0.7em;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8em;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .account-display:hover .copy-btn {
+            opacity: 1;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Login Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: #1a1a2e;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5em;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        /* Login Simülasyon Stilleri */
+        .login-simulation {
+            background: #0f0f1e;
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .login-logo {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .login-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            color: #fff;
+            font-family: inherit;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #6c5ce7;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
+        }
+
+        .login-loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .login-success {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .success-icon {
+            font-size: 4em;
+            color: #00b894;
+            margin-bottom: 20px;
+            animation: scaleIn 0.5s;
+        }
+
+        @keyframes scaleIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .dashboard-preview {
+            display: none;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .dashboard-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+        }
+
+        .user-info h3 {
+            margin-bottom: 5px;
+        }
+
+        .user-status {
+            color: #00b894;
+            font-size: 0.9em;
+        }
+
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .dashboard-stat {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .dashboard-stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #4ecdc4;
+        }
+
+        .dashboard-stat-label {
+            font-size: 0.8em;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        /* Chat Widget */
+        .chat-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            background: rgba(30, 30, 46, 0.95);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            z-index: 999;
+            transform: translateY(calc(100% - 60px));
+            transition: transform 0.3s;
+        }
+
+        .chat-widget.open {
+            transform: translateY(0);
+        }
+
+        .chat-header {
+            padding: 15px;
+            background: rgba(108, 92, 231, 0.3);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-messages {
+            height: 300px;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .chat-message {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.9em;
+        }
+
+        .chat-message .user {
+            color: #4ecdc4;
+            font-weight: bold;
+            font-size: 0.8em;
+            margin-bottom: 5px;
+        }
+
+        .chat-input-area {
+            padding: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            color: #fff;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(0, 255, 0, 0.9);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1001;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: rgba(255, 0, 0, 0.9);
+        }
+
+        /* Bildirimler */
+        .notification-bar {
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            font-weight: bold;
+            animation: slideDown 0.5s ease;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+
+        /* Online Counter */
+        .online-counter {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            z-index: 99;
+        }
+
+        /* Mini Oyun */
+        .mini-game {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .slot-machine {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            font-size: 3em;
+        }
+
+        .slot {
+            width: 80px;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .slot.spinning {
+            animation: slotSpin 0.1s infinite;
+        }
+
+        @keyframes slotSpin {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+
+        /* Günlük Görevler */
+        .daily-tasks {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .task-item:hover {
+            background: rgba(0, 0, 0, 0.3);
+            transform: translateX(5px);
+        }
+
+        .task-item.completed {
+            opacity: 0.5;
+        }
+
+        .task-item.completed .task-name {
+            text-decoration: line-through;
+        }
+
+        .task-reward {
+            background: linear-gradient(135deg, #fdcb6e, #f39c12);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: #000;
+        }
+
+        /* Çarkıfelek */
+        .wheel-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 20px auto;
+        }
+
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                #ff6b6b 0deg 60deg,
+                #4ecdc4 60deg 120deg,
+                #45b7d1 120deg 180deg,
+                #f9ca24 180deg 240deg,
+                #f093fb 240deg 300deg,
+                #6c5ce7 300deg 360deg
+            );
+            position: relative;
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+        }
+
+        .wheel-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            z-index: 10;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 30px solid #fff;
+            z-index: 20;
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+        }
+
+        /* Liderlik Tablosu */
+        .leaderboard {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+
+        .leaderboard-item:hover {
+            background: rgba(0, 0, 0, 0.3);
+            transform: translateX(5px);
+        }
+
+        .rank {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .rank.gold { background: linear-gradient(135deg, #ffd700, #ffed4e); color: #000; }
+        .rank.silver { background: linear-gradient(135deg, #c0c0c0, #e8e8e8); color: #000; }
+        .rank.bronze { background: linear-gradient(135deg, #cd7f32, #daa520); color: #fff; }
+        .rank.normal { background: rgba(255, 255, 255, 0.1); }
+
+        .leaderboard-info {
+            flex: 1;
+        }
+
+        .leaderboard-name {
+            font-weight: bold;
+        }
+
+        .leaderboard-score {
+            color: #4ecdc4;
+            font-size: 0.9em;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2em; }
+            .platforms { grid-template-columns: 1fr; }
+            .chat-widget { width: calc(100% - 40px); }
+            .online-counter { top: 60px; right: 10px; font-size: 0.8em; }
+        }
+
+        /* Glitch Efekti */
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -1px 0 #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -1px 0 #00fff9;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(31px, 9999px, 94px, 0); }
+            20% { clip: rect(6px, 9999px, 14px, 0); }
+            40% { clip: rect(89px, 9999px, 44px, 0); }
+            60% { clip: rect(12px, 9999px, 63px, 0); }
+            80% { clip: rect(54px, 9999px, 28px, 0); }
+            100% { clip: rect(77px, 9999px, 92px, 0); }
+        }
+
+        @keyframes glitch-anim2 {
+            0% { clip: rect(65px, 9999px, 99px, 0); }
+            20% { clip: rect(23px, 9999px, 45px, 0); }
+            40% { clip: rect(87px, 9999px, 12px, 0); }
+            60% { clip: rect(34px, 9999px, 67px, 0); }
+            80% { clip: rect(91px, 9999px, 33px, 0); }
+            100% { clip: rect(2px, 9999px, 88px, 0); }
+        }
+
+        /* Konfeti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            position: absolute;
+            animation: confetti-fall 3s linear forwards;
+            z-index: 9999;
+        }
+
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            height: 20px;
+            margin: 10px 0;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #6c5ce7, #a29bfe);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin: 2px;
+        }
+
+        .badge-vip { background: linear-gradient(135deg, #ffd700, #ffed4e); color: #000; }
+        .badge-new { background: linear-gradient(135deg, #00b894, #00cec9); color: #fff; }
+        .badge-hot { background: linear-gradient(135deg, #ff7675, #d63031); color: #fff; }
+        .badge-pro { background: linear-gradient(135deg, #6c5ce7, #a29bfe); color: #fff; }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+        }
+
+        .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            margin-bottom: 5px;
+        }
+
+        .tooltip:hover::after {
+            opacity: 1;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(108, 92, 231, 0.5);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(108, 92, 231, 0.8);
+        }
+
+        /* Captcha */
+        .captcha-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .captcha-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .captcha-item {
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+        }
+
+        .captcha-item:hover {
+            background: rgba(108, 92, 231, 0.3);
+            transform: scale(1.05);
+        }
+
+        .captcha-item.selected {
+            background: rgba(0, 255, 0, 0.3);
+            border: 2px solid #00b894;
+        }
+
+        /* 2FA */
+        .two-fa {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .two-fa-input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 1.5em;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #fff;
+        }
+
+        .two-fa-input:focus {
+            outline: none;
+            border-color: #6c5ce7;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="notification-bar" id="notificationBar">
+        🎉 Yeni Güncelleme: Discord Nitro kodları eklendi! Hemen dene!
+    </div>
+
+    <div class="particles" id="particles"></div>
+    <canvas class="matrix-rain" id="matrixRain"></canvas>
+
+    <div class="online-counter">
+        <span class="pulse"></span>
+        <span id="onlineUsers">1,247</span> çevrimiçi
+        <div style="font-size: 0.8em; color: #888; margin-top: 5px;">
+            Stok: <span id="totalStock">5,847</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1 class="glitch" data-text="🎮 GAME ACCOUNT GENERATOR">🎮 GAME ACCOUNT GENERATOR</h1>
+            <p class="subtitle">Premium hesapları anında ücretsiz al!</p>
+            <div style="margin-top: 20px;">
+                <span class="badge badge-vip">👑 VIP Sistem Aktif</span>
+                <span class="badge badge-new">✨ Yeni Güncelleme</span>
+                <span class="badge badge-hot">🔥 Trend</span>
+            </div>
+        </header>
+
+        <!-- Kontrol Paneli -->
+        <div class="control-panel">
+            <button class="control-btn" onclick="toggleTheme()">
+                <span id="themeIcon">🌙</span> Tema Değiştir
+            </button>
+            <button class="control-btn" onclick="toggleMatrix()">
+                <span id="matrixIcon">🌧️</span> Matrix Modu
+            </button>
+            <button class="control-btn" onclick="toggleSound()">
+                <span id="soundIcon">🔊</span> Ses: Açık
+            </button>
+            <select class="control-btn" onchange="changeLanguage(this.value)">
+                <option value="tr">🇹🇷 Türkçe</option>
+                <option value="en">🇬🇧 English</option>
+                <option value="de">🇩🇪 Deutsch</option>
+            </select>
+            <button class="control-btn tooltip" data-tooltip="Yakında!" onclick="showVPNAlert()">
+                🛡️ VPN Öner
+            </button>
+        </div>
+
+        <!-- İstatistikler -->
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-value" id="totalGenerated">12,847</div>
+                <div class="stat-label">Toplam Üretilen</div>
+                <div class="stat-change positive" id="generatedChange">+24 son saat</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-value" id="activeUsers">3,421</div>
+                <div class="stat-label">Aktif Kullanıcı</div>
+                <div class="stat-change positive" id="activeChange">+156 bugün</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-value" id="successRate">94%</div>
+                <div class="stat-label">Başarı Oranı</div>
+                <div class="stat-change positive" id="successChange">+2% bu hafta</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🌍</div>
+                <div class="stat-value" id="countryCount">42</div>
+                <div class="stat-label">Ülke</div>
+                <div class="stat-change positive">Global</div>
+            </div>
+        </div>
+
+        <!-- Platformlar -->
+        <div class="platforms">
+            <!-- Roblox -->
+            <div class="platform-card" data-platform="roblox">
+                <div class="platform-header">
+                    <div class="platform-title">
+                        <div class="platform-icon roblox">🟥</div>
+                        <div>
+                            <div class="platform-name">Roblox</div>
+                            <span class="platform-status">Çalışıyor</span>
+                        </div>
+                    </div>
+                    <span class="badge badge-hot">POPÜLER</span>
+                </div>
+                
+                <div class="stock-info">
+                    <span>Stok: <strong id="roblox-stock">1,247</strong></span>
+                    <span>Son güncelleme: <span id="roblox-last">2 dk önce</span></span>
+                </div>
+                <div class="stock-bar">
+                    <div class="stock-fill" id="roblox-stock-bar" style="width: 75%"></div>
+                </div>
+
+                <div class="account-display" id="roblox-display">
+                    <button class="copy-btn" onclick="copyToClipboard('roblox')">📋 Kopyala</button>
+                    <div class="loading" id="roblox-loading">
+                        <div class="spinner"></div>
+                        <div>Hesap aranıyor...</div>
+                        <div style="font-size: 0.8em; color: #888; margin-top: 10px;">
+                            <span id="roblox-progress">0</span>% tamamlandı
+                        </div>
+                        <div class="progress-container" style="margin-top: 10px;">
+                            <div class="progress-bar" id="roblox-progress-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div id="roblox-content">
+                        <div class="account-info">
+                            <span class="label">Kullanıcı:</span>
+                            <span class="value" id="roblox-user">-</span>
+                        </div>
+                        <div class="account-info">
+                            <span class="label">Şifre:</span>
+                            <span class="value" id="roblox-pass">-</span>
+                            <span class="password-strength" id="roblox-strength"></span>
+                        </div>
+                        <div class="account-info">
+                            <span class="label">Robux:</span>
+                            <span class="value" id="roblox-robux">-</span>
+                        </div>
+                        <div class="account-info">
+                            <span class="label">Hesap Yaşı:</span>
+                            <span class="value" id="roblox-age">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-roblox" onclick="generateAccount('roblox')">
+                        🎲 Üret
+                    </button>
+                    <button class="btn btn-secondary" onclick="openLoginModal('roblox')">
+                        🚀 Burada Dene
+                    </button>
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-item-value" id="roblox-count">0</div>
+                        <div class="stat-item-label">Bugün</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item-value">%94</div>
+                        <div class="stat-item-label">Başarı</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item-value" id="roblox-claims">842</div>
+                        <div class="stat-item-label">Talep</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spotify -->
+            <div class="platform-card" data-platform="spotify">
+                <div class="platform-header">
+                    <div class="platform-title">
+                        <div class="platform-icon spotify">🎵</div>
+                        <div>
+                            <div class="platform-name">Spotify Premium</div>
+                            <span class="platform-status">Çalışıyor</span>
+                        </div>
+                    </div>
+                    <span class="badge badge-new">YENİ</span>
+                </div>
+                
+                <div class="stock-info">
+                    <span>Stok: <strong id="spotify-stock">892</strong></span>
+                    <span>Son güncelleme: <span id="spotify-last">5 dk önce</span></span>
+                </div>
+                <div class="stock-bar">
+                    <div class="stock-fill" id="spotify-stock-bar" style="width: 60%"></div>
+                </div>
+
+                <div class="account-display" id="spotify-display">
+                    <button class="copy-btn" onclick="copyToClipboard('spotify')">📋 Kopyala</button>
+                    <div class="loading" id="spotify-loading">
+                        <div class="spinner"></div>
+                        <div>Hesap aranıyor...</div>
+                        <div class="progress-container" style="margin-top: 10px;">
+                            <div class="progress-bar" id="spotify-progress-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div id="spotify-content">
+                        <div class="account-info">
+                            <span class="label">Email:</span>
+                            <span class="value" id="spotify-email">-</span>
+                        </div>
+                        <div class="account-info">
+                            <span class="label">Şifre:</span>
+                            <span class="value" id="spotify-pass">-</span>
+                            <span class="password-strength" id="spotify-strength"></span>
+                        </div>
+                        <div class="account-info">
+                            <span class="label">Plan:</span>
+                            <span class="value" id="spotify-plan">-</span>
+                        </div>
+                        <div class="account-info">
+                            <span class="label">Son Giriş:</span>
+                            <span class="value" id="spotify-lastlogin">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-spotify" onclick="generateAccount('spotify')">
+                        🎵 Üret
+                    </button>
+                    <button class="btn btn-secondary" onclick="openLoginModal('spotify')">
+                        🚀 Burada Dene
+                    </button>
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-item-value" id="spotify-count">0</div>
+                        <div class="stat-item-label">Bugün</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item-value">%91</div>
+                        <div class="stat-item-label">Başarı</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item-value" id="spotify-claims">623</div>
+                        <div class="stat-item-label">Talep</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Steam -->
+            <div class="platform-card" data-platform="steam">
+                <div class="platform-header">
+                    <div class="platform-title">
+                        <div class="platform-icon steam">🎮</div>
+                        <div>
+                            <div class="platform-name">Steam</div>
+                            <span class="platform-status">Çalışıyor</span>
+                        </div>
+                    </div>
+                    <span class="badge badge-pro">PRO</span>
+                </div>
+                
+                <div class="stock-info">
+                    <span>Stok: <strong id="steam-stock">1,534</strong></span>
+                    <span>Son güncelleme: <span id="steam-last">1 dk önce</span></span>
+                </div>
+                <div class="stock-bar">
+                    <div class="stock-fill" id="steam-stock-bar" style="width: 85%"></div>
+                </div>
+
+                <div class="account-display" id="steam-display">
+                    <button class="copy-btn" onclick="copyToClipboard('steam')">📋 Kopyala</button>
+                    <div class="loading" id="steam-loading">
+                        <div class="spinner"></div>
+                        <div>Hesap aranıyor...</div>
+                        <div class="progress-container" style="margin-top: 10px;">
+                            <div class="progress-bar" id="steam-progress-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div id="steam-content">
+                        <div class="account-info">
+                            <span class="label">Kullanıcı:</span>
+                            <span class="value" id="steam-user">-</span>
+                        </div>
+                        <div class="account-info">
+                            <span class="label">Şifre:</span>
+                            <span class="value" id="steam-pass">-</span>
+                            <span class="password-strength" id="steam-strength"></span>
+                        </div>
+                        <div class="account-info">
+                            <span class="label">Oyun:</span>
+                            <span class="value" id="steam-games">-</span>
+                        </div>
+                        <div class="account-info">
+                            <span class="label">Değer:</span>
+                            <span class="value" id="steam-value">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-steam" onclick="generateAccount('steam')">
+                        🎮 Üret
+                    </button>
+                    <button class="btn btn-secondary" onclick="openLoginModal('steam')">
+                        🚀 Burada Dene
+                    </button>
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-item-value" id="steam-count">0</div>
+                        <div class="stat-item-label">Bugün</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item-value">%89</div>
+                        <div class="stat-item-label">Başarı</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item-value" id="steam-claims">1,203</div>
+                        <div class="stat-item-label">Talep</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Netflix -->
+            <div class="platform-card" data-platform="netflix">
+                <div class="platform-header">
+                    <div class="platform-title">
+                        <div class="platform-icon netflix">🎬</div>
+                        <div>
+                            <div class="platform-name">Netflix</div>
+                            <span class="platform-status">Çalışıyor</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stock-info">
+                    <span>Stok: <strong id="netflix-stock">634</strong></span>
+                    <span>Son güncelleme: <span id="netflix-last">8 dk önce</span></span>
+                </div>
+                <div class="stock-bar">
+                    <div class="stock-fill" id="netflix-stock-bar" style="width: 45%"></div>
+                </div>
+
+                <div class="account-display" id="netflix-display">
+                    <button class="copy-btn" onclick="copyToClipboard('netflix')">📋 Kopyala</button>
+                    <div class="loading" id="netflix-loading">
+                        <div class="spinner"></div>
+                        <div>Hesap aranıyor...</div>
+                        <div class="progress-container" style="margin-top: 10px;">
+                            <div class="progress-bar" id="netflix-progress-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div id="netflix-content">
+                        <div class="account-info">
+                            <span class="label">Email:</span>
+                            <span class="value" id="netflix-email">-</span>
+                        </div>
+                        <div class="account-info">
+                            <span class="label">Şifre:</span>
+                            <span class="value" id="netflix-pass">-</span>
+                            <span class="password-strength" id="netflix-strength"></span>
+                        </div>
+                        <div class="account-info">
+                            <span class="label">Paket:</span>
+                            <span class="value" id="netflix-plan">-</span>
+                        </div>
+                        <div class="account-info">
+                            <span class="label">Ekran:</span>
+                            <span class="value" id="netflix-screens">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-netflix" onclick="generateAccount('netflix')">
+                        🎬 Üret
+                    </button>
+                    <button class="btn btn-secondary" onclick="openLoginModal('netflix')">
+                        🚀 Burada Dene
+                    </button>
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-item-value" id="netflix-count">0</div>
+                        <div class="stat-item-label">Bugün</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item-value">%87</div>
+                        <div class="stat-item-label">Başarı</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item-value" id="netflix-claims">445</div>
+                        <div class="stat-item-label">Talep</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Minecraft -->
+            <div class="platform-card vip" data-platform="minecraft">
+                <div class="platform-header">
+                    <div class="platform-title">
+                        <div class="platform-icon minecraft">⛏️</div>
+                        <div>
+                            <div class="platform-name">Minecraft Premium</div>
+                            <span class="platform-status">Çalışıyor</span>
+                        </div>
+                    </div>
+                    <span class="badge badge-vip">VIP</span>
+                </div>
+                
+                <div class="stock-info">
+                    <span>Stok: <strong id="minecraft-stock">423</strong></span>
+                    <span>Son güncelleme: <span id="minecraft-last">12 dk önce</span></span>
+                </div>
+                <div class="stock-bar">
+                    <div class="stock-fill" id="minecraft-stock-bar" style="width: 35%"></div>
+                </div>
+
+                <div class="account-display" id="minecraft-display">
+                    <button class="copy-btn" onclick="copyToClipboard('minecraft')">📋 Kopyala</button>
+                    <div class="loading" id="minecraft-loading">
+                        <div class="spinner"></div>
+                        <div>Hesap aranıyor...</div>
+                        <div class="progress-container" style="margin-top: 10px;">
+                            <div class="progress-bar" id="minecraft-progress-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div id="minecraft-content">
+                        <div class="account-info">
+                            <span class="label">Kullanıcı:</span>
+                            <span class="value" id="minecraft-user">-</span>
+                        </div>
+                        <div class="account-info">
+                            <span class="label">Şifre:</span>
+                            <span class="value" id="minecraft-pass">-</span>
+                            <span class="password-strength" id="minecraft-strength"></span>
+                        </div>
+                        <div class="account-info">
+                            <span class="label">Tip:</span>
+                            <span class="value" id="minecraft-type">-</span>
+                        </div>
+                        <div class="account-info">
+                            <span class="label">Hypixel:</span>
+                            <span class="value" id="minecraft-hypixel">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-minecraft" onclick="generateAccount('minecraft')">
+                        ⛏️ Üret
+                    </button>
+                    <button class="btn btn-secondary" onclick="openLoginModal('minecraft')">
+                        🚀 Burada Dene
+                    </button>
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-item-value" id="minecraft-count">0</div>
+                        <div class="stat-item-label">Bugün</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item-value">%92</div>
+                        <div class="stat-item-label">Başarı</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item-value" id="minecraft-claims">334</div>
+                        <div class="stat-item-label">Talep</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Discord -->
+            <div class="platform-card" data-platform="discord">
+                <div class="platform-header">
+                    <div class="platform-title">
+                        <div class="platform-icon discord">💎</div>
+                        <div>
+                            <div class="platform-name">Discord Nitro</div>
+                            <span class="platform-status">Çalışıyor</span>
+                        </div>
+                    </div>
+                    <span class="badge badge-hot">YENİ</span>
+                </div>
+                
+                <div class="stock-info">
+                    <span>Stok: <strong id="discord-stock">1,892</strong></span>
+                    <span>Son güncelleme: <span id="discord-last">Şimdi</span></span>
+                </div>
+                <div class="stock-bar">
+                    <div class="stock-fill" id="discord-stock-bar" style="width: 95%"></div>
+                </div>
+
+                <div class="account-display" id="discord-display">
+                    <button class="copy-btn" onclick="copyToClipboard('discord')">📋 Kopyala</button>
+                    <div class="loading" id="discord-loading">
+                        <div class="spinner"></div>
+                        <div>Kod aranıyor...</div>
+                        <div class="progress-container" style="margin-top: 10px;">
+                            <div class="progress-bar" id="discord-progress-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div id="discord-content">
+                        <div class="account-info">
+                            <span class="label">Nitro Kod:</span>
+                            <span class="value" id="discord-code" style="font-size: 0.85em;">-</span>
+                        </div>
+                        <div class="account-info">
+                            <span class="label">Tip:</span>
+                            <span class="value" id="discord-type">-</span>
+                        </div>
+                        <div class="account-info">
+                            <span class="label">Durum:</span>
+                            <span class="value" id="discord-status">-</span>
+                        </div>
+                        <div class="account-info">
+                            <span class="label">Süre:</span>
+                            <span class="value" id="discord-duration">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-discord" onclick="generateAccount('discord')">
+                        💎 Üret
+                    </button>
+                    <button class="btn btn-secondary" onclick="openLoginModal('discord')">
+                        🚀 Burada Dene
+                    </button>
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-item-value" id="discord-count">0</div>
+                        <div class="stat-item-label">Bugün</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item-value">%88</div>
+                        <div class="stat-item-label">Başarı</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-item-value" id="discord-claims">2,104</div>
+                        <div class="stat-item-label">Talep</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mini Oyun: Slot Makinesi -->
+        <div class="mini-game">
+            <h2>🎰 Şansını Dene</h2>
+            <p>Günde 3 kez çevir, ödül kazan!</p>
+            <div class="slot-machine" id="slotMachine">
+                <div class="slot" id="slot1">❓</div>
+                <div class="slot" id="slot2">❓</div>
+                <div class="slot" id="slot3">❓</div>
+            </div>
+            <button class="btn btn-primary" onclick="spinSlot()" id="spinBtn">
+                🎰 Çevir (3 kaldı)
+            </button>
+            <div id="slotResult" style="margin-top: 15px; font-weight: bold;"></div>
+        </div>
+
+        <!-- Günlük Görevler -->
+        <div class="daily-tasks">
+            <h2>📋 Günlük Görevler</h2>
+            <p>Tamamla, XP ve ödül kazan!</p>
+            <div class="task-list" id="taskList">
+                <div class="task-item" data-task="generate">
+                    <div>
+                        <div class="task-name">5 hesap üret</div>
+                        <div style="font-size: 0.8em; color: #888;">+50 XP</div>
+                    </div>
+                    <span class="task-reward">50 XP</span>
+                </div>
+                <div class="task-item" data-task="login">
+                    <div>
+                        <div class="task-name">2 hesapta dene</div>
+                        <div style="font-size: 0.8em; color: #888;">+30 XP</div>
+                    </div>
+                    <span class="task-reward">30 XP</span>
+                </div>
+                <div class="task-item" data-task="share">
+                    <div>
+                        <div class="task-name">Arkadaşını davet et</div>
+                        <div style="font-size: 0.8em; color: #888;">+100 XP</div>
+                    </div>
+                    <span class="task-reward">100 XP</span>
+                </div>
+                <div class="task-item" data-task="vip">
+                    <div>
+                        <div class="task-name">VIP hesap üret</div>
+                        <div style="font-size: 0.8em; color: #888;">+200 XP</div>
+                    </div>
+                    <span class="task-reward">200 XP</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Çarkıfelek -->
+        <div class="mini-game">
+            <h2>🎯 Çarkıfelek</h2>
+            <p>Her 6 saatte bir çevirme hakkı!</p>
+            <div class="wheel-container">
+                <div class="wheel-pointer"></div>
+                <div class="wheel" id="fortuneWheel">
+                    <div class="wheel-center">🎯</div>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="spinWheel()" id="wheelBtn">
+                🎯 Çevir
+            </button>
+            <div id="wheelResult" style="margin-top: 15px; font-weight: bold;"></div>
+        </div>
+
+        <!-- Liderlik Tablosu -->
+        <div class="leaderboard">
+            <h2>🏆 Liderlik Tablosu</h2>
+            <p>En çok hesap üreten kullanıcılar</p>
+            <div id="leaderboardList">
+                <div class="leaderboard-item">
+                    <div class="rank gold">1</div>
+                    <div class="leaderboard-info">
+                        <div class="leaderboard-name">xX_ProGamer_Xx</div>
+                        <div class="leaderboard-score">1,247 hesap</div>
+                    </div>
+                    <span class="badge badge-vip">VIP</span>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="rank silver">2</div>
+                    <div class="leaderboard-info">
+                        <div class="leaderboard-name">DarkNinja_99</div>
+                        <div class="leaderboard-score">982 hesap</div>
+                    </div>
+                    <span class="badge badge-pro">PRO</span>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="rank bronze">3</div>
+                    <div class="leaderboard-info">
+                        <div class="leaderboard-name">Epic_Warrior</div>
+                        <div class="leaderboard-score">756 hesap</div>
+                    </div>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="rank normal">4</div>
+                    <div class="leaderboard-info">
+                        <div class="leaderboard-name">Cool_Gamer_2024</div>
+                        <div class="leaderboard-score">634 hesap</div>
+                    </div>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="rank normal">5</div>
+                    <div class="leaderboard-info">
+                        <div class="leaderboard-name">Super_Player</div>
+                        <div class="leaderboard-score">521 hesap</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Son İşlemler -->
+        <div class="daily-tasks">
+            <h2>🕐 Son İşlemler</h2>
+            <div id="recentActivity" style="max-height: 300px; overflow-y: auto;">
+                <!-- Dinamik olarak doldurulacak -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">
+                    <span id="modalIcon">🎮</span>
+                    <span id="modalPlatformName">Platform</span>
+                </div>
+                <button class="modal-close" onclick="closeLoginModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="login-simulation" id="loginSimulation">
+                    <!-- Dinamik olarak doldurulacak -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Widget -->
+    <div class="chat-widget" id="chatWidget">
+        <div class="chat-header" onclick="toggleChat()">
+            <div>
+                <span style="color: #00b894;">●</span> Canlı Sohbet
+                <span style="font-size: 0.8em; color: #888;">(<span id="chatOnline">24</span> çevrimiçi)</span>
+            </div>
+            <span id="chatToggle">▼</span>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <!-- Dinamik mesajlar -->
+        </div>
+        <div class="chat-input-area">
+            <input type="text" class="chat-input" placeholder="Mesaj yaz..." id="chatInput" onkeypress="handleChatKey(event)">
+            <button class="btn btn-primary" onclick="sendChatMessage()" style="padding: 10px 15px;">Gönder</button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">Bildirim!</div>
+
+    <script>
+        // Global Değişkenler
+        let soundEnabled = true;
+        let currentTheme = 'dark';
+        let matrixMode = false;
+        let spinCount = 3;
+        let userXP = 0;
+        let userLevel = 1;
+        let generatedAccounts = {
+            roblox: 0, spotify: 0, steam: 0, netflix: 0, minecraft: 0, discord: 0
+        };
+        let tasksCompleted = {
+            generate: 0, login: 0, share: 0, vip: 0
+        };
+
+        // Ses efektleri
+        const sounds = {
+            click: new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZSA0PVanu87plHQUuh9Dz2YU2Bhxqv+zplkcODVGm5O+4ZSAEMYrO89GFNwYdcfDr4ZdJDQtPp+XysWUeBjiS1/LNfi0GI33R8tOENAcdcO/r4phJDQxPp+XyxGUhBjqT1/PQfS4GI3/R8tSFNwYdcfDr4plHDAtQp+TwxmUgBDeOzvPVhjYGHG3A7+SaSQ0MTKjl8b1kHwU2jc7z1YU1Bhxwv+zmm0gNC1Gn5O/EZSAFNo/M89CEMwYccPDs4ppIDQtRp+TvvWUfBTiOz/PShjUGG3Dw7OKbSA0LUqjl8b1kHwU3jM/z0oU1Bxtw8OzhmUgNC1Ko5fG+ZSAF'),
+            success: new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZSA0PVanu87plHQUuh9Dz2YU2Bhxqv+zplkcODVGm5O+4ZSAEMYrO89GFNwYdcfDr4ZdJDQtPp+XysWUeBjiS1/LNfi0GI33R8tOENAcdcO/r4phJDQxPp+XyxGUhBjqT1/PQfS4GI3/R8tSFNwYdcfDr4plHDAtQp+TwxmUgBDeOzvPVhjYGHG3A7+SaSQ0MTKjl8b1kHwU2jc7z1YU1Bhxwv+zmm0gNC1Gn5O/EZSAFNo/M89CEMwYccPDs4ppIDQtRp+TvvWUfBTiOz/PShjUGG3Dw7OKbSA0LUqjl8b1kHwU3jM/z0oU1Bxtw8OzhmUgNC1Ko5fG+ZSAF'),
+            error: new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZSA0PVanu87plHQUuh9Dz2YU2Bhxqv+zplkcODVGm5O+4ZSAEMYrO89GFNwYdcfDr4ZdJDQtPp+XysWUeBjiS1/LNfi0GI33R8tOENAcdcO/r4phJDQxPp+XyxGUhBjqT1/PQfS4GI3/R8tSFNwYdcfDr4plHDAtQp+TwxmUgBDeOzvPVhjYGHG3A7+SaSQ0MTKjl8b1kHwU2jc7z1YU1Bhxwv+zmm0gNC1Gn5O/EZSAFNo/M89CEMwYccPDs4ppIDQtRp+TvvWUfBTiOz/PShjUGG3Dw7OKbSA0LUqjl8b1kHwU3jM/z0oU1Bxtw8OzhmUgNC1Ko5fG+ZSAF')
+        };
+
+        function playSound(type) {
+            if (soundEnabled && sounds[type]) {
+                sounds[type].currentTime = 0;
+                sounds[type].play().catch(e => console.log('Ses çalınamadı'));
+            }
+        }
+
+        // Parçacık sistemi
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        // Matrix yağmuru
+        function initMatrix() {
+            const canvas = document.getElementById('matrixRain');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
+            const fontSize = 14;
+            const columns = canvas.width / fontSize;
+            const drops = [];
+            
+            for (let i = 0; i < columns; i++) {
+                drops[i] = Math.random() * -100;
+            }
+            
+            function draw() {
+                if (!matrixMode) return;
+                
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = '#0F0';
+                ctx.font = fontSize + 'px monospace';
+                
+                for (let i = 0; i < drops.length; i++) {
+                    const text = chars[Math.floor(Math.random() * chars.length)];
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                    
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    drops[i]++;
+                }
+                
+                requestAnimationFrame(draw);
+            }
+            
+            draw();
+        }
+
+        // Dinamik istatistikler
+        function updateStats() {
+            // Online kullanıcılar
+            const onlineBase = 1200;
+            const onlineRandom = Math.floor(Math.random() * 200);
+            const onlineEl = document.getElementById('onlineUsers');
+            const oldOnline = parseInt(onlineEl.textContent.replace(',', ''));
+            const newOnline = onlineBase + onlineRandom;
+            
+            if (Math.random() > 0.7) {
+                // Ani düşüş simülasyonu
+                const drop = Math.floor(Math.random() * 200) + 50;
+                onlineEl.textContent = (newOnline - drop).toLocaleString();
+                onlineEl.style.color = '#ff7675';
+                setTimeout(() => {
+                    onlineEl.style.color = '';
+                }, 2000);
+            } else {
+                onlineEl.textContent = newOnline.toLocaleString();
+            }
+
+            // Toplam stok
+            const stockEl = document.getElementById('totalStock');
+            let currentStock = parseInt(stockEl.textContent.replace(',', ''));
+            const change = Math.floor(Math.random() * 20) - 5;
+            currentStock += change;
+            stockEl.textContent = currentStock.toLocaleString();
+
+            // Platform stokları
+            const platforms = ['roblox', 'spotify', 'steam', 'netflix', 'minecraft', 'discord'];
+            platforms.forEach(platform => {
+                const stockEl = document.getElementById(`${platform}-stock`);
+                let stock = parseInt(stockEl.textContent.replace(',', ''));
+                const stockChange = Math.floor(Math.random() * 10) - 3;
+                stock += stockChange;
+                stockEl.textContent = stock.toLocaleString();
+                
+                // Stok barı güncelleme
+                const maxStock = platform === 'discord' ? 2000 : platform === 'minecraft' ? 500 : 1500;
+                const percentage = Math.min((stock / maxStock) * 100, 100);
+                document.getElementById(`${platform}-stock-bar`).style.width = percentage + '%';
+                
+                // Stok azaldı uyarısı
+                if (stockChange < 0 && Math.random() > 0.8) {
+                    showToast(`${platform.charAt(0).toUpperCase() + platform.slice(1)} stoğu azalıyor!`, true);
+                }
+            });
+
+            // Aktif kullanıcılar
+            const activeEl = document.getElementById('activeUsers');
+            let active = parseInt(activeEl.textContent.replace(',', ''));
+            active += Math.floor(Math.random() * 20) - 5;
+            activeEl.textContent = active.toLocaleString();
+
+            // Başarı oranı
+            if (Math.random() > 0.9) {
+                const rate = 90 + Math.floor(Math.random() * 8);
+                document.getElementById('successRate').textContent = rate + '%';
+            }
+        }
+
+        setInterval(updateStats, 3000);
+
+        // Hesap üretme
+        function generateAccount(platform) {
+            playSound('click');
+            const btn = document.querySelector(`[data-platform="${platform}"] .btn-${platform}`);
+            const loading = document.getElementById(`${platform}-loading`);
+            const content = document.getElementById(`${platform}-content`);
+            const countEl = document.getElementById(`${platform}-count`);
+            const progressBar = document.getElementById(`${platform}-progress-bar`);
+            
+            btn.disabled = true;
+            loading.style.display = 'block';
+            content.style.opacity = '0.3';
+            
+            // Progress simülasyonu
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 100) progress = 100;
+                progressBar.style.width = progress + '%';
+            }, 200);
+
+            setTimeout(() => {
+                clearInterval(progressInterval);
+                const data = generatePlatformData(platform);
+                
+                updatePlatformUI(platform, data);
+                
+                // Sayacı artır
+                generatedAccounts[platform]++;
+                let currentCount = parseInt(countEl.textContent);
+                countEl.textContent = currentCount + 1;
+                
+                // Görev güncelleme
+                tasksCompleted.generate++;
+                checkTasks();
+                
+                loading.style.display = 'none';
+                content.style.opacity = '1';
+                btn.disabled = false;
+                progressBar.style.width = '0%';
+                
+                playSound('success');
+                showToast(`${platform.charAt(0).toUpperCase() + platform.slice(1)} hesabı üretildi!`);
+                
+                // Konfeti
+                if (Math.random() > 0.7) createConfetti();
+                
+                // Aktivite ekle
+                addActivity(`${platform.toUpperCase()} hesabı üretildi`, 'success');
+                
+            }, 1500 + Math.random() * 1500);
+        }
+
+        function generatePlatformData(platform) {
+            const usernamePrefixes = ['xX', 'Pro', 'Epic', 'Dark', 'Light', 'Super', 'Mega', 'Ultra', 'Hyper', 'Lord', 'King', 'Queen', 'Sir', 'Mr', 'Mrs', 'The', 'Its', 'Not', 'Real', 'Fake', 'Cool', 'Hot', 'Ice', 'Fire', 'Shadow', 'Ghost'];
+            const usernameRoots = ['Gamer', 'Player', 'Ninja', 'Dragon', 'Wolf', 'Eagle', 'Tiger', 'Lion', 'Bear', 'Shark', 'Snake', 'Fox', 'Cat', 'Dog', 'Bird', 'Fish', 'Star', 'Moon', 'Sun', 'Sky', 'Cloud', 'Storm', 'Thunder', 'Lightning', 'Rock', 'Stone', 'Steel', 'Iron', 'Gold', 'Silver'];
+            const usernameSuffixes = ['xX', 'HD', 'XD', 'LOL', 'GG', 'WP', 'OP', 'AF', 'TV', 'YT', 'TR', 'US', 'UK', 'EU', 'ASIA', '123', '456', '789', '999', '666', '777', '888', '000', '111', '2023', '2024', '2025'];
+            const emailDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com', 'protonmail.com', 'mail.com', 'yandex.com'];
+            
+            const generatePassword = () => {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+                let pass = '';
+                for (let i = 0; i < 12; i++) {
+                    pass += chars[Math.floor(Math.random() * chars.length)];
+                }
+                return pass;
+            };
+
+            const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+            switch(platform) {
+                case 'roblox':
+                    return {
+                        user: `${usernamePrefixes[randomInt(0, usernamePrefixes.length-1)]}${usernameRoots[randomInt(0, usernameRoots.length-1)]}${randomInt(1, 9999)}`,
+                        pass: generatePassword(),
+                        robux: `${randomInt(0, 10000)} Robux`,
+                        age: `${randomInt(1, 8)} yıl`
+                    };
+                case 'spotify':
+                    const names = ['alex', 'jordan', 'casey', 'riley', 'jessie', 'avery', 'quinn', 'skyler'];
+                    return {
+                        email: `${names[randomInt(0, names.length-1)]}${randomInt(1, 999)}@${emailDomains[randomInt(0, emailDomains.length-1)]}`,
+                        pass: generatePassword(),
+                        plan: ['Premium Individual', 'Premium Family', 'Premium Duo', 'Premium Student'][randomInt(0, 3)],
+                        lastLogin: `${randomInt(1, 24)} saat önce`
+                    };
+                case 'steam':
+                    return {
+                        user: `${usernamePrefixes[randomInt(0, usernamePrefixes.length-1)]}_${usernameRoots[randomInt(0, usernameRoots.length-1)]}_${randomInt(100, 9999)}`,
+                        pass: generatePassword(),
+                        games: `${randomInt(5, 200)} Oyun`,
+                        value: `$${randomInt(50, 5000)}`
+                    };
+                case 'netflix':
+                    const firstNames = ['emma', 'liam', 'olivia', 'noah', 'ava', 'ethan'];
+                    const lastNames = ['smith', 'johnson', 'brown', 'taylor', 'miller', 'wilson'];
+                    return {
+                        email: `${firstNames[randomInt(0, firstNames.length-1)]}.${lastNames[randomInt(0, lastNames.length-1)]}${randomInt(1, 999)}@${emailDomains[randomInt(0, emailDomains.length-1)]}`,
+                        pass: generatePassword(),
+                        plan: ['Premium Ultra HD', 'Standard HD', 'Basic', 'Premium (4 Ekran)'][randomInt(0, 3)],
+                        screens: `${randomInt(1, 4)} / 4`
+                    };
+                case 'minecraft':
+                    const adjectives = ['Pixelated', 'Crafty', 'Mining', 'Blocky', 'Diamond', 'Ender'];
+                    const nouns = ['Miner', 'Crafter', 'Builder', 'Warrior', 'Hunter', 'Explorer'];
+                    return {
+                        user: `${adjectives[randomInt(0, adjectives.length-1)]}${nouns[randomInt(0, nouns.length-1)]}${randomInt(1, 9999)}`,
+                        pass: generatePassword(),
+                        type: ['Premium', 'MVP', 'MVP+', 'VIP', 'VIP+'][randomInt(0, 4)],
+                        hypixel: ['VIP', 'VIP+', 'MVP', 'MVP+', 'Yok'][randomInt(0, 4)]
+                    };
+                case 'discord':
+                    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                    let code = '';
+                    for (let i = 0; i < 24; i++) code += chars[Math.floor(Math.random() * chars.length)];
+                    return {
+                        code: code.match(/.{4}/g).join('-'),
+                        type: ['Nitro Classic (Aylık)', 'Nitro Boost (Aylık)', 'Nitro Classic (Yıllık)', 'Nitro Boost (Yıllık)'][randomInt(0, 3)],
+                        status: ['Aktif', 'Kullanılmamış', 'Yeni'][randomInt(0, 2)],
+                        duration: `${randomInt(1, 12)} ay`
+                    };
+            }
+        }
+
+        function updatePlatformUI(platform, data) {
+            if (platform === 'roblox') {
+                document.getElementById('roblox-user').textContent = data.user;
+                document.getElementById('roblox-pass').textContent = data.pass;
+                document.getElementById('roblox-robux').textContent = data.robux;
+                document.getElementById('roblox-age').textContent = data.age;
+                updatePasswordStrength('roblox', data.pass);
+            } else if (platform === 'spotify') {
+                document.getElementById('spotify-email').textContent = data.email;
+                document.getElementById('spotify-pass').textContent = data.pass;
+                document.getElementById('spotify-plan').textContent = data.plan;
+                document.getElementById('spotify-lastlogin').textContent = data.lastLogin;
+                updatePasswordStrength('spotify', data.pass);
+            } else if (platform === 'steam') {
+                document.getElementById('steam-user').textContent = data.user;
+                document.getElementById('steam-pass').textContent = data.pass;
+                document.getElementById('steam-games').textContent = data.games;
+                document.getElementById('steam-value').textContent = data.value;
+                updatePasswordStrength('steam', data.pass);
+            } else if (platform === 'netflix') {
+                document.getElementById('netflix-email').textContent = data.email;
+                document.getElementById('netflix-pass').textContent = data.pass;
+                document.getElementById('netflix-plan').textContent = data.plan;
+                document.getElementById('netflix-screens').textContent = data.screens;
+                updatePasswordStrength('netflix', data.pass);
+            } else if (platform === 'minecraft') {
+                document.getElementById('minecraft-user').textContent = data.user;
+                document.getElementById('minecraft-pass').textContent = data.pass;
+                document.getElementById('minecraft-type').textContent = data.type;
+                document.getElementById('minecraft-hypixel').textContent = data.hypixel;
+                updatePasswordStrength('minecraft', data.pass);
+            } else if (platform === 'discord') {
+                document.getElementById('discord-code').textContent = data.code;
+                document.getElementById('discord-type').textContent = data.type;
+                document.getElementById('discord-status').textContent = data.status;
+                document.getElementById('discord-duration').textContent = data.duration;
+            }
+        }
+
+        function updatePasswordStrength(platform, password) {
+            const strengthEl = document.getElementById(`${platform}-strength`);
+            let strength = 'weak';
+            if (password.length > 12 && /[!@#$%^&*]/.test(password)) strength = 'strong';
+            else if (password.length > 8) strength = 'medium';
+            
+            strengthEl.className = `password-strength strength-${strength}`;
+            strengthEl.title = strength === 'strong' ? 'Güçlü' : strength === 'medium' ? 'Orta' : 'Zayıf';
+        }
+
+        // Login Modal
+        function openLoginModal(platform) {
+            playSound('click');
+            const modal = document.getElementById('loginModal');
+            const simulation = document.getElementById('loginSimulation');
+            const data = generatePlatformData(platform);
+            
+            // Platform ikonu ve adı
+            const icons = {
+                roblox: '🟥', spotify: '🎵', steam: '🎮', 
+                netflix: '🎬', minecraft: '⛏️', discord: '💎'
+            };
+            document.getElementById('modalIcon').textContent = icons[platform];
+            document.getElementById('modalPlatformName').textContent = platform.charAt(0).toUpperCase() + platform.slice(1);
+            
+            // Login simülasyonu oluştur
+            let loginHTML = '';
+            
+            if (platform === 'roblox') {
+                loginHTML = `
+                    <div class="login-header">
+                        <div class="login-logo">🟥</div>
+                        <h3>Roblox'a Giriş Yap</h3>
+                    </div>
+                    <div class="login-form">
+                        <input type="text" class="login-input" value="${data.user}" readonly>
+                        <input type="password" class="login-input" value="${data.pass}" readonly>
+                        <button class="login-btn" onclick="simulateLogin('roblox')">Giriş Yap</button>
+                    </div>
+                `;
+            } else if (platform === 'spotify') {
+                loginHTML = `
+                    <div class="login-header">
+                        <div class="login-logo">🎵</div>
+                        <h3>Spotify'da Oturum Aç</h3>
+                    </div>
+                    <div class="login-form">
+                        <input type="email" class="login-input" value="${data.email}" readonly>
+                        <input type="password" class="login-input" value="${data.pass}" readonly>
+                        <button class="login-btn" onclick="simulateLogin('spotify')">Oturum Aç</button>
+                    </div>
+                `;
+            } else if (platform === 'steam') {
+                loginHTML = `
+                    <div class="login-header">
+                        <div class="login-logo">🎮</div>
+                        <h3>Steam'e Giriş Yap</h3>
+                    </div>
+                    <div class="login-form">
+                        <input type="text" class="login-input" value="${data.user}" readonly>
+                        <input type="password" class="login-input" value="${data.pass}" readonly>
+                        <div class="captcha-box">
+                            <div>Güvenlik Doğrulaması</div>
+                            <div class="captcha-grid" id="captchaGrid">
+                                ${Array(9).fill(0).map((_, i) => `
+                                    <div class="captcha-item" onclick="toggleCaptcha(this)">
+                                        ${['🚗', '🚕', '🚙', '🚌', '🚎', '🚓', '🚑', '🚒', '🚐'][i]}
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div style="font-size: 0.8em; color: #888; margin-top: 10px;">
+                                Tüm arabaları seçin
+                            </div>
+                        </div>
+                        <button class="login-btn" onclick="simulateLogin('steam')">Giriş Yap</button>
+                    </div>
+                `;
+            } else if (platform === 'netflix') {
+                loginHTML = `
+                    <div class="login-header">
+                        <div class="login-logo">🎬</div>
+                        <h3>Netflix'e Giriş Yap</h3>
+                    </div>
+                    <div class="login-form">
+                        <input type="email" class="login-input" value="${data.email}" readonly>
+                        <input type="password" class="login-input" value="${data.pass}" readonly>
+                        <button class="login-btn" onclick="simulateLogin('netflix')">Oturum Aç</button>
+                    </div>
+                `;
+            } else if (platform === 'minecraft') {
+                loginHTML = `
+                    <div class="login-header">
+                        <div class="login-logo">⛏️</div>
+                        <h3>Minecraft'a Giriş Yap</h3>
+                    </div>
+                    <div class="login-form">
+                        <input type="text" class="login-input" value="${data.user}" readonly>
+                        <input type="password" class="login-input" value="${data.pass}" readonly>
+                        <button class="login-btn" onclick="simulateLogin('minecraft')">Giriş Yap</button>
+                    </div>
+                `;
+            } else if (platform === 'discord') {
+                loginHTML = `
+                    <div class="login-header">
+                        <div class="login-logo">💎</div>
+                        <h3>Discord Nitro Kodu</h3>
+                    </div>
+                    <div class="login-form" style="text-align: center;">
+                        <div style="background: rgba(88, 101, 242, 0.2); padding: 20px; border-radius: 10px; margin-bottom: 20px; font-family: monospace; font-size: 1.2em; letter-spacing: 2px;">
+                            ${data.code}
+                        </div>
+                        <button class="login-btn" onclick="simulateLogin('discord')">Kodu Kullan</button>
+                    </div>
+                `;
+            }
+            
+            simulation.innerHTML = loginHTML;
+            modal.classList.add('active');
+            
+            // Görev güncelleme
+            tasksCompleted.login++;
+            checkTasks();
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.remove('active');
+        }
+
+        function toggleCaptcha(el) {
+            el.classList.toggle('selected');
+            playSound('click');
+        }
+
+        function simulateLogin(platform) {
+            playSound('click');
+            const simulation = document.getElementById('loginSimulation');
+            
+            // Loading göster
+            simulation.innerHTML = `
+                <div class="login-loading">
+                    <div class="spinner"></div>
+                    <div>Giriş yapılıyor...</div>
+                    <div style="font-size: 0.8em; color: #888; margin-top: 10px;">Lütfen bekleyin</div>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                // 2FA kontrolü (rastgele)
+                if (Math.random() > 0.5 && platform !== 'discord') {
+                    simulation.innerHTML = `
+                        <div class="login-loading">
+                            <div style="font-size: 3em; margin-bottom: 20px;">📱</div>
+                            <div>İki Faktörlü Doğrulama</div>
+                            <div style="font-size: 0.9em; color: #888; margin: 15px 0;">
+                                Telefonunuza gönderilen 6 haneli kodu girin
+                            </div>
+                            <div class="two-fa">
+                                ${Array(6).fill(0).map(() => `
+                                    <input type="text" class="two-fa-input" maxlength="1" onkeyup="moveToNext(this, event)">
+                                `).join('')}
+                            </div>
+                            <button class="login-btn" onclick="completeLogin('${platform}')" style="margin-top: 20px;">
+                                Doğrula
+                            </button>
+                        </div>
+                    `;
+                    // İlk input'a focus
+                    setTimeout(() => {
+                        const inputs = simulation.querySelectorAll('.two-fa-input');
+                        if (inputs[0]) inputs[0].focus();
+                    }, 100);
+                } else {
+                    completeLogin(platform);
+                }
+            }, 1500);
+        }
+
+        function moveToNext(input, event) {
+            if (event.key >= '0' && event.key <= '9') {
+                input.value = event.key;
+                const next = input.nextElementSibling;
+                if (next) next.focus();
+            }
+        }
+
+        function completeLogin(platform) {
+            const simulation = document.getElementById('loginSimulation');
+            
+            simulation.innerHTML = `
+                <div class="login-success">
+                    <div class="success-icon">✓</div>
+                    <h3>Başarılı!</h3>
+                    <div style="color: #888; margin-top: 10px;">
+                        ${platform === 'discord' ? 'Nitro kodu aktif edildi!' : 'Hesaba başarıyla giriş yapıldı!'}
+                    </div>
+                </div>
+            `;
+            
+            playSound('success');
+            createConfetti();
+            addActivity(`${platform.toUpperCase()} girişi başarılı`, 'success');
+            
+            setTimeout(() => {
+                // Dashboard göster
+                showDashboard(platform);
+            }, 1000);
+        }
+
+        function showDashboard(platform) {
+            const simulation = document.getElementById('loginSimulation');
+            const data = generatePlatformData(platform);
+            
+            let dashboardHTML = '';
+            
+            if (platform === 'roblox') {
+                dashboardHTML = `
+                    <div class="dashboard-preview">
+                        <div class="dashboard-header">
+                            <div class="avatar">🧑</div>
+                            <div class="user-info">
+                                <h3>${data.user}</h3>
+                                <div class="user-status">● Çevrimiçi</div>
+                            </div>
+                        </div>
+                        <div class="dashboard-stats">
+                            <div class="dashboard-stat">
+                                <div class="dashboard-stat-value">${data.robux}</div>
+                                <div class="dashboard-stat-label">Robux</div>
+                            </div>
+                            <div class="dashboard-stat">
+                                <div class="dashboard-stat-value">${randomInt(10, 500)}</div>
+                                <div class="dashboard-stat-label">Arkadaş</div>
+                            </div>
+                            <div class="dashboard-stat">
+                                <div class="dashboard-stat-value">${randomInt(5, 50)}</div>
+                                <div class="dashboard-stat-label">Oyun</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px; padding: 15px; background: rgba(0, 255, 0, 0.1); border-radius: 10px; text-align: center;">
+                            ✓ Hesap aktif ve kullanıma hazır
+                        </div>
+                    </div>
+                `;
+            } else if (platform === 'spotify') {
+                dashboardHTML = `
+                    <div class="dashboard-preview">
+                        <div class="dashboard-header">
+                            <div class="avatar">🎵</div>
+                            <div class="user-info">
+                                <h3>${data.email.split('@')[0]}</h3>
+                                <div class="user-status">● Premium Aktif</div>
+                            </div>
+                        </div>
+                        <div style="margin: 20px 0; padding: 15px; background: rgba(29, 185, 84, 0.2); border-radius: 10px;">
+                            <div style="font-weight: bold; margin-bottom: 10px;">🎵 Son Çalınan</div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #1db954, #1ed760); border-radius: 5px; display: flex; align-items: center; justify-content: center;">🎵</div>
+                                <div>
+                                    <div style="font-weight: bold;">Random Song Title</div>
+                                    <div style="font-size: 0.8em; color: #888;">Random Artist</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dashboard-stats">
+                            <div class="dashboard-stat">
+                                <div class="dashboard-stat-value">${randomInt(100, 5000)}</div>
+                                <div class="dashboard-stat-label">Çalma Listesi</div>
+                            </div>
+                            <div class="dashboard-stat">
+                                <div class="dashboard-stat-value">${randomInt(1000, 50000)}</div>
+                                <div class="dashboard-stat-label">Takipçi</div>
+                            </div>
+                            <div class="dashboard-stat">
+                                <div class="dashboard-stat-value">${randomInt(50, 500)}</div>
+                                <div class="dashboard-stat-label">Podcast</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (platform === 'steam') {
+                dashboardHTML = `
+                    <div class="dashboard-preview">
+                        <div class="dashboard-header">
+                            <div class="avatar">🎮</div>
+                            <div class="user-info">
+                                <h3>${data.user}</h3>
+                                <div class="user-status">● Çevrimiçi</div>
+                            </div>
+                        </div>
+                        <div style="margin: 20px 0; padding: 15px; background: rgba(42, 71, 94, 0.5); border-radius: 10px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span>Oyun Kütüphanesi:</span>
+                                <span style="color: #4ecdc4;">${data.games}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Hesap Değeri:</span>
+                                <span style="color: #4ecdc4;">${data.value}</span>
+                            </div>
+                        </div>
+                        <div class="dashboard-stats">
+                            <div class="dashboard-stat">
+                                <div class="dashboard-stat-value">${randomInt(10, 200)}</div>
+                                <div class="dashboard-stat-label">Arkadaş</div>
+                            </div>
+                            <div class="dashboard-stat">
+                                <div class="dashboard-stat-value">${randomInt(100, 5000)}</div>
+                                <div class="dashboard-stat-label">Başarım</div>
+                            </div>
+                            <div class="dashboard-stat">
+                                <div class="dashboard-stat-value">${randomInt(1, 500)}</div>
+                                <div class="dashboard-stat-label">Seviye</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (platform === 'netflix') {
+                dashboardHTML = `
+                    <div class="dashboard-preview">
+                        <div class="dashboard-header">
+                            <div class="avatar">🎬</div>
+                            <div class="user-info">
+                                <h3>${data.email.split('@')[0]}</h3>
+                                <div class="user-status">● ${data.plan}</div>
+                            </div>
+                        </div>
+                        <div style="margin: 20px 0;">
+                            <div style="font-weight: bold; margin-bottom: 15px;">🎬 Popüler İçerikler</div>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                                ${Array(3).fill(0).map(() => `
+                                    <div style="aspect-ratio: 2/3; background: linear-gradient(135deg, #e50914, #b20710); border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 2em;">🎬</div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div style="padding: 15px; background: rgba(229, 9, 20, 0.2); border-radius: 10px; text-align: center;">
+                            ✓ ${data.plan} aktif
+                        </div>
+                    </div>
+                `;
+            } else if (platform === 'minecraft') {
+                dashboardHTML = `
+                    <div class="dashboard-preview">
+                        <div class="dashboard-header">
+                            <div class="avatar">⛏️</div>
+                            <div class="user-info">
+                                <h3>${data.user}</h3>
+                                <div class="user-status">● ${data.type}</div>
+                            </div>
+                        </div>
+                        <div style="margin: 20px 0; padding: 15px; background: rgba(93, 140, 58, 0.3); border-radius: 10px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span>Hypixel Rank:</span>
+                                <span style="color: #4ecdc4;">${data.hypixel}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Oynama Süresi:</span>
+                                <span style="color: #4ecdc4;">${randomInt(100, 2000)} saat</span>
+                            </div>
+                        </div>
+                        <div class="dashboard-stats">
+                            <div class="dashboard-stat">
+                                <div class="dashboard-stat-value">${randomInt(10, 100)}</div>
+                                <div class="dashboard-stat-label">Sunucu</div>
+                            </div>
+                            <div class="dashboard-stat">
+                                <div class="dashboard-stat-value">${randomInt(1000, 50000)}</div>
+                                <div class="dashboard-stat-label">Blok</div>
+                            </div>
+                            <div class="dashboard-stat">
+                                <div class="dashboard-stat-value">${randomInt(10, 500)}</div>
+                                <div class="dashboard-stat-label">Skin</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (platform === 'discord') {
+                dashboardHTML = `
+                    <div class="dashboard-preview">
+                        <div class="dashboard-header">
+                            <div class="avatar" style="background: linear-gradient(135deg, #5865f2, #4752c4);">💎</div>
+                            <div class="user-info">
+                                <h3>Nitro Aktif</h3>
+                                <div class="user-status">● Boosting</div>
+                            </div>
+                        </div>
+                        <div style="margin: 20px 0; padding: 20px; background: linear-gradient(135deg, rgba(88, 101, 242, 0.3), rgba(71, 82, 196, 0.3)); border-radius: 10px; text-align: center;">
+                            <div style="font-size: 3em; margin-bottom: 10px;">💎</div>
+                            <div style="font-weight: bold; font-size: 1.2em;">Nitro Boost Aktif</div>
+                            <div style="color: #888; margin-top: 5px;">${data.duration} süreyle aktif</div>
+                        </div>
+                        <div class="dashboard-stats">
+                            <div class="dashboard-stat">
+                                <div class="dashboard-stat-value">${randomInt(10, 50)}</div>
+                                <div class="dashboard-stat-label">Boost</div>
+                            </div>
+                            <div class="dashboard-stat">
+                                <div class="dashboard-stat-value">${randomInt(100, 1000)}</div>
+                                <div class="dashboard-stat-label">Emoji</div>
+                            </div>
+                            <div class="dashboard-stat">
+                                <div class="dashboard-stat-value">${randomInt(10, 100)}MB</div>
+                                <div class="dashboard-stat-label">Dosya Limiti</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            simulation.innerHTML = dashboardHTML;
+        }
+
+        // Kopyalama
+        function copyToClipboard(platform) {
+            let text = '';
+            if (platform === 'roblox') {
+                text = `Kullanıcı: ${document.getElementById('roblox-user').textContent}\nŞifre: ${document.getElementById('roblox-pass').textContent}`;
+            } else if (platform === 'spotify') {
+                text = `Email: ${document.getElementById('spotify-email').textContent}\nŞifre: ${document.getElementById('spotify-pass').textContent}`;
+            } else if (platform === 'steam') {
+                text = `Kullanıcı: ${document.getElementById('steam-user').textContent}\nŞifre: ${document.getElementById('steam-pass').textContent}`;
+            } else if (platform === 'netflix') {
+                text = `Email: ${document.getElementById('netflix-email').textContent}\nŞifre: ${document.getElementById('netflix-pass').textContent}`;
+            } else if (platform === 'minecraft') {
+                text = `Kullanıcı: ${document.getElementById('minecraft-user').textContent}\nŞifre: ${document.getElementById('minecraft-pass').textContent}`;
+            } else if (platform === 'discord') {
+                text = `Nitro Kod: ${document.getElementById('discord-code').textContent}`;
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                playSound('success');
+                showToast('Panoya kopyalandı!');
+            });
+        }
+
+        // Toast bildirim
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast show' + (isError ? ' error' : '');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Konfeti efekti
+        function createConfetti() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#f093fb', '#6c5ce7'];
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 3000);
+            }
+        }
+
+        // Slot makinesi
+        function spinSlot() {
+            if (spinCount <= 0) {
+                showToast('Günlük çevirme hakkın bitti!', true);
+                return;
+            }
+            
+            playSound('click');
+            spinCount--;
+            document.getElementById('spinBtn').textContent = `🎰 Çevir (${spinCount} kaldı)`;
+            
+            const slots = ['🎰', '💎', '🎮', '🎵', '🎬', '⛏️', '🟥', '💰', '🎁', '🔑'];
+            const slot1 = document.getElementById('slot1');
+            const slot2 = document.getElementById('slot2');
+            const slot3 = document.getElementById('slot3');
+            
+            slot1.classList.add('spinning');
+            slot2.classList.add('spinning');
+            slot3.classList.add('spinning');
+            
+            let spins = 0;
+            const spinInterval = setInterval(() => {
+                slot1.textContent = slots[Math.floor(Math.random() * slots.length)];
+                slot2.textContent = slots[Math.floor(Math.random() * slots.length)];
+                slot3.textContent = slots[Math.floor(Math.random() * slots.length)];
+                spins++;
+                
+                if (spins > 20) {
+                    clearInterval(spinInterval);
+                    slot1.classList.remove('spinning');
+                    slot2.classList.remove('spinning');
+                    slot3.classList.remove('spinning');
+                    
+                    // Sonuç kontrolü
+                    if (slot1.textContent === slot2.textContent && slot2.textContent === slot3.textContent) {
+                        playSound('success');
+                        showToast('🎉 Jackpot! +500 XP kazandın!');
+                        userXP += 500;
+                        createConfetti();
+                    } else if (slot1.textContent === slot2.textContent || slot2.textContent === slot3.textContent) {
+                        showToast('✨ İkili eşleşme! +100 XP');
+                        userXP += 100;
+                    } else {
+                        showToast('Tekrar dene! +10 XP');
+                        userXP += 10;
+                    }
+                }
+            }, 100);
+        }
+
+        // Çarkıfelek
+        let wheelSpinning = false;
+        function spinWheel() {
+            if (wheelSpinning) return;
+            
+            playSound('click');
+            wheelSpinning = true;
+            const wheel = document.getElementById('fortuneWheel');
+            const degrees = 1800 + Math.random() * 1800;
+            
+            wheel.style.transform = `rotate(${degrees}deg)`;
+            
+            setTimeout(() => {
+                wheelSpinning = false;
+                const prizes = ['100 XP', '250 XP', '500 XP', '1000 XP', 'VIP 1 Gün', 'Şanslı Çevirme', 'Boş', 'Özel İkon'];
+                const prize = prizes[Math.floor(Math.random() * prizes.length)];
+                
+                if (prize !== 'Boş') {
+                    playSound('success');
+                    showToast(`🎉 ${prize} kazandın!`);
+                    if (prize.includes('XP')) {
+                        userXP += parseInt(prize);
+                    }
+                    createConfetti();
+                } else {
+                    showToast('Bu sefer olmadı, tekrar dene!');
+                }
+            }, 4000);
+        }
+
+        // Chat widget
+        function toggleChat() {
+            const widget = document.getElementById('chatWidget');
+            const toggle = document.getElementById('chatToggle');
+            widget.classList.toggle('open');
+            toggle.textContent = widget.classList.contains('open') ? '▲' : '▼';
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            addChatMessage('Sen', message, true);
+            input.value = '';
+            
+            // Otomatik yanıt
+            setTimeout(() => {
+                const responses = [
+                    'Bu hesaplar gerçekten çalışıyor mu?',
+                    'Discord nitro kodu alan var mı?',
+                    'Robux hesabı çok iyiymiş!',
+                    'Spotify premium çalışıyor, teşekkürler',
+                    'Yeni hesaplar ne zaman gelecek?',
+                    'VIP üyelik nasıl alınıyor?',
+                    'Steam hesabında kaç oyun var?',
+                    'Netflix 4K paketi var mı?'
+                ];
+                const randomUser = ['ProGamer', 'DarkNinja', 'EpicWarrior', 'CoolPlayer', 'SuperGamer'][Math.floor(Math.random() * 5)];
+                addChatMessage(randomUser, responses[Math.floor(Math.random() * responses.length)]);
+            }, 1000 + Math.random() * 2000);
+        }
+
+        function handleChatKey(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+
+        function addChatMessage(user, message, isUser = false) {
+            const container = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            div.className = 'chat-message';
+            div.innerHTML = `
+                <div class="user" style="color: ${isUser ? '#6c5ce7' : '#4ecdc4'}">${user}</div>
+                <div>${message}</div>
+            `;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Otomatik chat mesajları
+        setInterval(() => {
+            if (Math.random() > 0.7) {
+                const messages = [
+                    'Yeni hesap üretildi! 🎉',
+                    'Discord nitro kodu çalışıyor 💎',
+                    'Roblox hesabında 5000 Robux var!',
+                    'Spotify premium aktif 🎵',
+                    'Steam hesabı çok dolu 🎮',
+                    'Netflix 4K paketi mükemmel 🎬',
+                    'Minecraft VIP hesap aldım ⛏️'
+                ];
+                const users = ['User123', 'Gamer456', 'Player789', 'NinjaX', 'Pro2024'];
+                const user = users[Math.floor(Math.random() * users.length)];
+                const msg = messages[Math.floor(Math.random() * messages.length)];
+                addChatMessage(user, msg);
+            }
+        }, 5000);
+
+        // Görev kontrolü
+        function checkTasks() {
+            const tasks = document.querySelectorAll('.task-item');
+            tasks.forEach(task => {
+                const taskType = task.dataset.task;
+                if (taskType === 'generate' && tasksCompleted.generate >= 5) {
+                    task.classList.add('completed');
+                    if (!task.dataset.rewarded) {
+                        task.dataset.rewarded = 'true';
+                        showToast('Görev tamamlandı: 5 hesap üret! +50 XP');
+                        userXP += 50;
+                    }
+                } else if (taskType === 'login' && tasksCompleted.login >= 2) {
+                    task.classList.add('completed');
+                    if (!task.dataset.rewarded) {
+                        task.dataset.rewarded = 'true';
+                        showToast('Görev tamamlandı: 2 hesapta dene! +30 XP');
+                        userXP += 30;
+                    }
+                }
+            });
+        }
+
+        // Aktivite ekleme
+        function addActivity(text, type) {
+            const container = document.getElementById('recentActivity');
+            const div = document.createElement('div');
+            div.style.cssText = 'padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center;';
+            const time = new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+            div.innerHTML = `
+                <span>${type === 'success' ? '✓' : '●'} ${text}</span>
+                <span style="color: #888; font-size: 0.8em;">${time}</span>
+            `;
+            container.insertBefore(div, container.firstChild);
+            
+            // En fazla 10 aktivite tut
+            while (container.children.length > 10) {
+                container.removeChild(container.lastChild);
+            }
+        }
+
+        // Tema değiştirme
+        function toggleTheme() {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.body.classList.toggle('light-mode');
+            document.getElementById('themeIcon').textContent = currentTheme === 'dark' ? '🌙' : '☀️';
+        }
+
+        // Matrix modu
+        function toggleMatrix() {
+            matrixMode = !matrixMode;
+            document.body.classList.toggle('matrix-mode');
+            document.getElementById('matrixIcon').textContent = matrixMode ? '☀️' : '🌧️';
+            if (matrixMode) initMatrix();
+        }
+
+        // Ses kontrolü
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundIcon').textContent = soundEnabled ? '🔊' : '🔇';
+            document.getElementById('soundIcon').parentElement.innerHTML = 
+                `<span id="soundIcon">${soundEnabled ? '🔊' : '🔇'}</span> Ses: ${soundEnabled ? 'Açık' : 'Kapalı'}`;
+        }
+
+        // Dil değiştirme
+        function changeLanguage(lang) {
+            showToast(`Dil değiştirildi: ${lang.toUpperCase()}`);
+        }
+
+        // VPN uyarısı
+        function showVPNAlert() {
+            showToast('🛡️ VPN kullanmanız önerilir!', true);
+        }
+
+        // Yardımcı fonksiyonlar
+        function randomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // İlk yükleme
+        window.onload = () => {
+            // İlk hesapları göster
+            ['roblox', 'spotify', 'steam', 'netflix', 'minecraft', 'discord'].forEach(platform => {
+                const data = generatePlatformData(platform);
+                updatePlatformUI(platform, data);
+            });
+            
+            // İlk chat mesajları
+            addChatMessage('Sistem', 'Game Account Generator\'a hoş geldiniz! 🎮');
+            addChatMessage('Admin', 'Yeni hesaplar eklendi, hemen deneyin!');
+            
+            // İlk aktiviteler
+            addActivity('Sistem başlatıldı', 'info');
+            addActivity('Veritabanı bağlantısı kuruldu', 'success');
+        };
+    </script>
+</body>
+</html>
